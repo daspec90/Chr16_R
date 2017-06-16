@@ -14,12 +14,12 @@ library(dplyr)
 
 ```{r, cache=TRUE}
 # read in .vcf file
-Chr18.data <- read.table("Chr18.all.vcf", as.is=TRUE, na.strings=".")
-vcf.header <- system("grep '#C' Chr18.all.vcf",intern = TRUE)
+Chr16.data <- read.table("Chr16.all.vcf", as.is=TRUE, na.strings=".")
+vcf.header <- system("grep '#C' Chr16.all.vcf",intern = TRUE)
 vcf.header <- sub("#","",vcf.header) #get rid of the pound sign
 vcf.header <- unlist(strsplit(vcf.header,split="\t"))
-colnames(Chr18.data) <- vcf.header
-head(Chr18.data, 3)
+colnames(Chr16.data) <- vcf.header
+head(Chr16.data, 3)
 ```
 
 ###String split data
@@ -27,59 +27,59 @@ head(Chr18.data, 3)
 ```{r}
 # Before splitting add NAs to blank cells
 
-Chr18.data$DBA[is.na(Chr18.data$DBA)] <- "NA:NA:NA:NA:NA:NA:NA:NA"
+Chr16.data$DBA[is.na(Chr16.data$DBA)] <- "NA:NA:NA:NA:NA:NA:NA:NA"
 
 DBA.tmp <- matrix(
-  unlist(strsplit(Chr18.data$DBA,split = ":")),
-  nrow=nrow(Chr18.data),
+  unlist(strsplit(Chr16.data$DBA,split = ":")),
+  nrow=nrow(Chr16.data),
   byrow=TRUE
   )
 head(DBA.tmp)
 colnames(DBA.tmp) <- paste("DBA",c("gt","tot.depth","NObsAllele", "ref.depth","ref.qual","alt.depth","alt.qual","gen.lik"),sep="_")
 
-Chr18.data$Chr18[is.na(Chr18.data$Chr18)] <- "NA:NA:NA:NA:NA:NA:NA:NA"
+Chr16.data$Chr16[is.na(Chr16.data$Chr16)] <- "NA:NA:NA:NA:NA:NA:NA:NA"
 
-Chr18.tmp <- matrix(
-  unlist(strsplit(Chr18.data$Chr18,split = ":")),
-  nrow=nrow(Chr18.data),
+Chr16.tmp <- matrix(
+  unlist(strsplit(Chr16.data$Chr16,split = ":")),
+  nrow=nrow(Chr16.data),
   byrow=TRUE
   )
-head(Chr18.tmp)
-colnames(Chr18.tmp) <- paste("Chr18",c("gt","tot.depth","NObsAllele", "ref.depth","ref.qual","alt.depth","alt.qual","gen.lik"),sep="_")
+head(Chr16.tmp)
+colnames(Chr16.tmp) <- paste("Chr16",c("gt","tot.depth","NObsAllele", "ref.depth","ref.qual","alt.depth","alt.qual","gen.lik"),sep="_")
 
-Chr18.data <- cbind(Chr18.data,DBA.tmp,Chr18.tmp,stringsAsFactors=FALSE)
-summary(Chr18.data)
+Chr16.data <- cbind(Chr16.data,DBA.tmp,Chr16.tmp,stringsAsFactors=FALSE)
+summary(Chr16.data)
 ```
 
 
 ###Convert columns back to numeric:
 ```{r}
-Chr18.data[,c("DBA_tot.depth","DBA_ref.depth","DBA_ref.qual","DBA_alt.depth","DBA_alt.qual",
-            "Chr18_tot.depth","Chr18_ref.depth","Chr18_ref.qual","Chr18_alt.depth","Chr18_alt.qual")] <- 
-  apply(Chr18.data[,c("DBA_tot.depth","DBA_ref.depth","DBA_ref.qual","DBA_alt.depth","DBA_alt.qual",
-            "Chr18_tot.depth","Chr18_ref.depth","Chr18_ref.qual","Chr18_alt.depth","Chr18_alt.qual")],
+Chr16.data[,c("DBA_tot.depth","DBA_ref.depth","DBA_ref.qual","DBA_alt.depth","DBA_alt.qual",
+            "Chr16_tot.depth","Chr16_ref.depth","Chr16_ref.qual","Chr16_alt.depth","Chr16_alt.qual")] <- 
+  apply(Chr16.data[,c("DBA_tot.depth","DBA_ref.depth","DBA_ref.qual","DBA_alt.depth","DBA_alt.qual",
+            "Chr16_tot.depth","Chr16_ref.depth","Chr16_ref.qual","Chr16_alt.depth","Chr16_alt.qual")],
         2,
         as.numeric
         )
-head(Chr18.data, 4)
+head(Chr16.data, 4)
 ```
 
 ###Exploratory analysis:
 
 ####Sequencing depth: DBA, raw
 ```{r}
-qplot(Chr18.data$DBA_tot.depth, geom="histogram")
+qplot(Chr16.data$DBA_tot.depth, geom="histogram")
 ```
 
 ####Sequencing depth: DBA, focused
 ```{r}
-qplot(Chr18.data$DBA_tot.depth, geom="histogram", xlim=c(20, 100))
+qplot(Chr16.data$DBA_tot.depth, geom="histogram", xlim=c(20, 100))
 ```
 
-####Sequencing depth: Chr18, focused
+####Sequencing depth: Chr16, focused
 
 ```{r}
-qplot(Chr18.data$Chr18_tot.depth, geom="histogram", xlim=c(20, 100))
+qplot(Chr16.data$Chr16_tot.depth, geom="histogram", xlim=c(20, 100))
 ```
 
 ###Scatterplot of DBA and Chr18 sequencing depths (DP)
